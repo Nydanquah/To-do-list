@@ -16,6 +16,13 @@ function addTask(){
     saveData();
 }
 
+inputBox.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        addTask();
+    }
+});
+
 listContainer.addEventListener("click" , function(e){
     if(e.target.tagName === "LI"){
         e.target.classList.toggle("checked");
@@ -35,3 +42,32 @@ function showTask(){
     listContainer.innerHTML = localStorage.getItem("data");
 }
 showTask();
+
+function makeEditable(li) {
+    const oldText = li.firstChild.textContent;
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = oldText;
+    li.innerHTML = '';        
+    li.appendChild(input);
+    input.focus();
+
+function finish() {
+    const newText = input.value.trim() || oldText;
+    li.innerHTML = newText + '<span>×</span>';
+    saveData();
+    }
+    input.addEventListener('blur', finish);
+    input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        input.blur();
+    }
+    });
+}
+
+listContainer.addEventListener('dblclick', function(e) {
+    if (e.target.tagName === 'LI') {
+    makeEditable(e.target);
+    }
+});
